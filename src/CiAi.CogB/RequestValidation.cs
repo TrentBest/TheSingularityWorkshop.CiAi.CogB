@@ -59,8 +59,7 @@ public static class RequestValidation
             part.Length > 0 &&
             (part == "0" || part[0] is >= '1' and <= '9') &&
             part.All(c => c is >= '0' and <= '9')) &&
-            int.TryParse(parts[0], out var major) && major >= 1 &&
-            parts.All(part => int.TryParse(part, out _));
+            parts[0][0] is >= '1' and <= '9';
     }
 
     private static bool IsRepositorySegment(string value) =>
