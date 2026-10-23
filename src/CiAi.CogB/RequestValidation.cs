@@ -5,8 +5,6 @@ namespace CiAi.CogB;
 /// <summary>Deterministic validation before any transport can be called.</summary>
 public static class RequestValidation
 {
-    private static readonly Regex RepositoryPattern = new("^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", RegexOptions.CultureInvariant);
-
     public static IReadOnlyList<string> Validate(OutboundRequest? request, ISet<string> allowedTargets, ISet<string> allowedOperations)
     {
         ArgumentNullException.ThrowIfNull(allowedTargets);
@@ -29,7 +27,7 @@ public static class RequestValidation
         if (string.IsNullOrWhiteSpace(request.AuthorizationRequirement) || request.AuthorizationRequirement.Length > OutboundRequest.MaxIdentifierLength)
             errors.Add("authorizationRequirement.invalid");
         if (request.Context is null || request.Context.Length > OutboundRequest.MaxContextLength) errors.Add("context.invalid");
-        if (RepositoryPattern.IsMatch(request.TargetRepository) && !allowedTargets.Contains(request.TargetRepository)) errors.Add("target.not-allowed");
+        if (IsRepositoryId(request.TargetRepository) && !allowedTargets.Contains(request.TargetRepository)) errors.Add("target.not-allowed");
         if (string.Equals(request.SourceRepository, request.TargetRepository, StringComparison.OrdinalIgnoreCase)) errors.Add("source-target.same");
         return errors;
     }
@@ -41,6 +39,21 @@ public static class RequestValidation
     }
     private static void CheckRepository(string value, string field, ICollection<string> errors)
     {
-        if (string.IsNullOrWhiteSpace(value) || !RepositoryPattern.IsMatch(value)) errors.Add(field + ".invalid");
+        if (!IsRepositoryId(value)) errors.Add(field + ".invalid");
     }
+
+    // Keep repository identity rules aligned with CogA's offline RepositoryId parser.
+    private static bool IsRepositoryId(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length > 200 || value.Any(char.IsWhiteSpace))
+            return false;
+
+        var parts = value.Split('/');
+        return parts.Length == 2 && IsRepositorySegment(parts[0]) && IsRepositorySegment(parts[1]);
+    }
+
+    private static bool IsRepositorySegment(string value) =>
+        value.Length is > 0 and <= 100 &&
+        value is not "." and not ".." &&
+        value.All(c => char.IsAsciiLetterOrDigit(c) || c is '-' or '_' or '.');
 }
