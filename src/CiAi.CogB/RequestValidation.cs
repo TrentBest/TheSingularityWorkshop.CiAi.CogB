@@ -24,7 +24,7 @@ public static class RequestValidation
             errors.Add("operation.invalid");
         else if (!allowedOperations.Contains(request.OperationId)) errors.Add("operation.not-allowed");
 
-        if (string.IsNullOrWhiteSpace(request.ContractVersion) || !Version.TryParse(request.ContractVersion, out var version) || version.Major < 1)
+        if (string.IsNullOrWhiteSpace(request.ContractVersion) || request.ContractVersion.Count(c => c == '.') != 2 || !Version.TryParse(request.ContractVersion, out var version) || version.Major < 1)
             errors.Add("contractVersion.invalid");
         if (string.IsNullOrWhiteSpace(request.AuthorizationRequirement) || request.AuthorizationRequirement.Length > OutboundRequest.MaxIdentifierLength)
             errors.Add("authorizationRequirement.invalid");
