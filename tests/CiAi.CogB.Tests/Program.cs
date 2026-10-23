@@ -7,6 +7,8 @@ Require(RequestValidation.Validate(valid, targets, operations).Count == 0, "vali
 var caseSensitiveTargets = new HashSet<string>(StringComparer.Ordinal) { "TrentBest/TestTarget" };
 Require(RequestValidation.Validate(valid with { TargetRepository = "trentbest/testtarget" }, caseSensitiveTargets, operations).Count == 0, "target allowlist matching must be case-insensitive regardless of collection comparer");
 Require(RequestValidation.Validate(valid with { ContractVersion = "01.0.0" }, targets, operations).Contains("contractVersion.invalid"), "leading-zero version components must be rejected");
+Require(RequestValidation.Validate(valid with { ContractVersion = "0.9.0" }, targets, operations).Contains("contractVersion.invalid"), "zero major version must be rejected consistently with CogA");
+Require(RequestValidation.Validate(valid with { ContractVersion = "123456789012345678901234567890.2.3" }, targets, operations).Count == 0, "canonical numeric components must not be limited by Int32 parsing");
 Require(RequestValidation.Validate(valid with { ContractVersion = "1.0.0-preview" }, targets, operations).Contains("contractVersion.invalid"), "version suffixes must be rejected");
 Require(RequestValidation.Validate(valid with { ContractVersion = "1.0.0" }, targets, operations).Count == 0, "canonical semantic version must pass");
 Require(RequestValidation.Validate(valid with { TargetRepository = "TrentBest/Unknown" }, targets, operations).Contains("target.not-allowed"), "unknown target must be rejected");
