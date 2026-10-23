@@ -20,12 +20,12 @@ public static class RequestValidation
             errors.Add("operation.invalid");
         else if (!allowedOperations.Contains(request.OperationId)) errors.Add("operation.not-allowed");
 
-        if (string.IsNullOrWhiteSpace(request.ContractVersion) || request.ContractVersion.Count(c => c == '.') != 2 || !Version.TryParse(request.ContractVersion, out var version) || version.Major < 1)
+        if (!IsContractVersion(request.ContractVersion))
             errors.Add("contractVersion.invalid");
         if (string.IsNullOrWhiteSpace(request.AuthorizationRequirement) || request.AuthorizationRequirement.Length > OutboundRequest.MaxIdentifierLength)
             errors.Add("authorizationRequirement.invalid");
         if (request.Context is null || request.Context.Length > OutboundRequest.MaxContextLength) errors.Add("context.invalid");
-        if (IsRepositoryId(request.TargetRepository) && !allowedTargets.Contains(request.TargetRepository)) errors.Add("target.not-allowed");
+        if (IsRepositoryId(request.TargetRepository) && !allowedTargets.Any(target => string.Equals(target, request.TargetRepository, StringComparison.OrdinalIgnoreCase))) errors.Add("target.not-allowed");
         if (string.Equals(request.SourceRepository, request.TargetRepository, StringComparison.OrdinalIgnoreCase)) errors.Add("source-target.same");
         return errors;
     }
@@ -48,6 +48,19 @@ public static class RequestValidation
 
         var parts = value.Split('/');
         return parts.Length == 2 && IsRepositorySegment(parts[0]) && IsRepositorySegment(parts[1]);
+    }
+
+    // Accept strict major.minor.patch only; no signs, suffixes, or leading zeroes.
+    private static bool IsContractVersion(string? value)
+    {
+        if (string.IsNullOrEmpty(value)) return false;
+        var parts = value.Split('.');
+        return parts.Length == 3 && parts.All(part =>
+            part.Length > 0 &&
+            (part == "0" || part[0] is >= '1' and <= '9') &&
+            part.All(c => c is >= '0' and <= '9')) &&
+            int.TryParse(parts[0], out var major) && major >= 1 &&
+            parts.All(part => int.TryParse(part, out _));
     }
 
     private static bool IsRepositorySegment(string value) =>
