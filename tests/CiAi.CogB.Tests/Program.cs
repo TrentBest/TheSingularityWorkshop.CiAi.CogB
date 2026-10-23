@@ -8,6 +8,8 @@ Require(RequestValidation.Validate(valid with { TargetRepository = "TrentBest/Un
 Require(RequestValidation.Validate(valid with { OperationId = "publish.package" }, targets, operations).Contains("operation.not-allowed"), "unknown operation must be rejected");
 Require(RequestValidation.Validate(valid with { Context = new string('x', OutboundRequest.MaxContextLength + 1) }, targets, operations).Contains("context.invalid"), "oversized context must be rejected");
 Require(RequestValidation.Validate(valid with { SourceRepository = "not-canonical" }, targets, operations).Contains("sourceRepository.invalid"), "malformed source repository must be rejected");
+Require(RequestValidation.Validate(valid with { TargetRepository = "TrentBest/.." }, targets, operations).Contains("targetRepository.invalid"), "dot-segment repository identity must be rejected");
+Require(RequestValidation.Validate(valid with { SourceRepository = "TréntBest/TestSource" }, targets, operations).Contains("sourceRepository.invalid"), "non-ASCII repository identity must be rejected");
 Require(RequestValidation.Validate(valid with { SourceRepository = "TrentBest/TestTarget" }, targets, operations).Contains("source-target.same"), "self-target must be rejected");
 Console.WriteLine("PASS: CogB request-contract checks");
 return;
