@@ -4,6 +4,11 @@ var targets = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "TrentBest
 var operations = new HashSet<string>(StringComparer.Ordinal) { "observe.status", "test.noop" };
 var valid = new OutboundRequest("req-001", "corr-001", "idem-001", "TrentBest/TestSource", "TrentBest/TestTarget", "test.noop", "1.0.0", "test-environment-only", "bounded sample context");
 Require(RequestValidation.Validate(valid, targets, operations).Count == 0, "valid request should pass");
+var caseSensitiveTargets = new HashSet<string>(StringComparer.Ordinal) { "TrentBest/TestTarget" };
+Require(RequestValidation.Validate(valid with { TargetRepository = "trentbest/testtarget" }, caseSensitiveTargets, operations).Count == 0, "target allowlist matching must be case-insensitive regardless of collection comparer");
+Require(RequestValidation.Validate(valid with { ContractVersion = "01.0.0" }, targets, operations).Contains("contractVersion.invalid"), "leading-zero version components must be rejected");
+Require(RequestValidation.Validate(valid with { ContractVersion = "1.0.0-preview" }, targets, operations).Contains("contractVersion.invalid"), "version suffixes must be rejected");
+Require(RequestValidation.Validate(valid with { ContractVersion = "1.0.0" }, targets, operations).Count == 0, "canonical semantic version must pass");
 Require(RequestValidation.Validate(valid with { TargetRepository = "TrentBest/Unknown" }, targets, operations).Contains("target.not-allowed"), "unknown target must be rejected");
 Require(RequestValidation.Validate(valid with { OperationId = "publish.package" }, targets, operations).Contains("operation.not-allowed"), "unknown operation must be rejected");
 Require(RequestValidation.Validate(valid with { Context = new string('x', OutboundRequest.MaxContextLength + 1) }, targets, operations).Contains("context.invalid"), "oversized context must be rejected");
