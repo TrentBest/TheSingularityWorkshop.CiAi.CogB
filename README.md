@@ -4,6 +4,10 @@
 
 CogB is an experimental library in the CiAi delegation set. It does not itself authorize GitHub operations, perform network calls, or execute an LLM-generated command. A trusted host must provide explicit target and operation allowlists and separately enforce authorization.
 
+## Documentation
+
+See [RequestValidation UML and use case](docs/UML/RequestValidationUML.md) for the request boundary, collaborators, and host-owned authorization responsibilities.
+
 ## 01 — See it in a minute
 
 Requires the .NET 8 SDK.
