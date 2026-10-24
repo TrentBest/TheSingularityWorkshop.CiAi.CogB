@@ -61,7 +61,7 @@ public sealed class CapabilityRequest
 
     internal string IdempotencyIdentity => $"{RequesterIdentity}\n{IdempotencyKey}";
     internal string Fingerprint => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("\n",
-        OperationId, RequesterIdentity, CapabilityId, CapabilityVersion, ProviderRepository,
+        OperationId, IdempotencyKey, RequesterIdentity, CapabilityId, CapabilityVersion, ProviderRepository,
         SourceRepository, SourceRevision, InputDigest, ContractVersion, MaximumOutputBytes,
         CreatedAt.ToUniversalTime().ToString("O"), ExpiresAt.ToUniversalTime().ToString("O"))))).ToLowerInvariant();
 
