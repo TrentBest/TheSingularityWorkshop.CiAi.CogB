@@ -24,9 +24,15 @@ CogB does not authorize (CogD), discover (CogA), dispatch remote jobs, retrieve 
 - Idempotency is in-memory only; durable retry safety remains future work.
 - No network access or external dependencies.
 
+## Gallery
+
+See [Gallery.md](Gallery.md) for the quick tour and verification recipe.
+
 ## 04 — UML and use case
 
 See [CapabilityRequestBook UML and use case](docs/UML/CapabilityRequestBookUML.md).
+
+See [CapabilityRequestBook class companion](src/TheSingularityWorkshop.CiAi.CogB/CapabilityRequestBook.md).
 
 ## 05 — Release status
 
