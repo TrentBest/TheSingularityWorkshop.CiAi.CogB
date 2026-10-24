@@ -16,7 +16,7 @@ public sealed class CapabilityRequest
         IdempotencyKey = Token(idempotencyKey, nameof(idempotencyKey));
         RequesterIdentity = Token(requesterIdentity, nameof(requesterIdentity));
         CapabilityId = Token(capabilityId, nameof(capabilityId), true);
-        CapabilityVersion = Token(capabilityVersion, nameof(capabilityVersion));
+        CapabilityVersion = Token(capabilityVersion, nameof(capabilityVersion), dots: true);
         ProviderRepository = Repository(providerRepository, nameof(providerRepository));
         SourceRepository = Repository(sourceRepository, nameof(sourceRepository));
         SourceRevision = Hex(sourceRevision, 40, nameof(sourceRevision));
