@@ -1,5 +1,7 @@
 # The Singularity Workshop CiAi.CogB
 
+[![Sith Policy](assets/sith-policy.svg)](https://github.com/TrentBest/TheSingularityWorkshop.CiAi.CogB/actions/workflows/sith-policy.yml)
+
 **CogB turns approved intent into a bounded, correlated request.** It records request identity and pinned inputs; it does not dispatch execution.
 
 ## 01 — See it in a minute
