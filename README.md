@@ -1,5 +1,6 @@
 # CiAi.CogB — Outbound Request Boundary
 
+[![Sith Policy](assets/sith-policy.svg)](https://github.com/TrentBest/TheSingularityWorkshop.CiAi.CogB/actions/workflows/sith-policy.yml)
 **Mission:** define a typed, bounded outbound request and deterministic validation before any transport is called.
 
 CogB is an experimental library in the CiAi delegation set. It does not itself authorize GitHub operations, perform network calls, or execute an LLM-generated command. A trusted host must provide explicit target and operation allowlists and separately enforce authorization.
