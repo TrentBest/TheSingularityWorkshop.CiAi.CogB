@@ -11,7 +11,7 @@ See [RequestValidation UML and use case](docs/UML/RequestValidationUML.md) for t
 
 ## 01 — See it in a minute
 
-Requires the .NET 8 SDK.
+Requires the .NET 10 SDK.
 
     dotnet build src/CiAi.CogB/CiAi.CogB.csproj --configuration Release
     dotnet run --project tests/CiAi.CogB.Tests/CiAi.CogB.Tests.csproj --configuration Release
